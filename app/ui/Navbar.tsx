@@ -6,7 +6,7 @@ export default function Navbar() {
       <nav className="bg-white shadow-md fixed w-full z-50">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="text-3xl font-bold text-grey-800">
-            Nepalisk Cusine
+            <Link href="/home">Nepalisk Cusine</Link>
           </div>
           <ul className="hidden md:flex space-x-6">
             <li>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useActionState } from "react";
 import { useRouter } from "next/navigation"; // For handling form submission or navigation
 import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/outline"; //Heroicons
+import { BookingState, createBooking } from "@/app/lib/actions";
 
 const Booking = () => {
   const router = useRouter();
@@ -10,19 +11,23 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
 
+  // const initialState: BookingState = { message: null, errors: {} };
+  // const [state, handleSubmit] = useActionState(createBooking, initialState);
+
   // Handle Form Submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!selectedDate || !selectedTime) {
-      alert("Please select a valid date and time!");
-      return;
-    }
-    // Example: Redirecting to a confirmation page. not yet implemented.
-    // router.push(
-    //   `/confirmation?people=${peopleCount}&date=${selectedDate}&time=${selectedTime}`
-    // );
-    console.log("success!");
-  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (!selectedDate || !selectedTime) {
+  //     alert("Please select a valid date and time!");
+  //     return;
+  //   }
+  //   // Example: Redirecting to a confirmation page. not yet implemented.
+  //   // router.push(
+  //   //   `/confirmation?people=${peopleCount}&date=${selectedDate}&time=${selectedTime}`
+  //   // );
+  //   console.log("success!");
+  // };
 
   const increment = () => setPeopleCount((prev) => prev + 1);
   const decrement = () =>
@@ -41,7 +46,10 @@ const Booking = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
       <form
-        onSubmit={handleSubmit}
+        // onSubmit={handleSubmit}
+        //  action={createBooking}
+
+        // Responsive: Scales well on all screen sizes with max-w-md and w-full.
         className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="text-2xl font-bold text-yellow-500 text-center mb-6">
@@ -84,10 +92,13 @@ const Booking = () => {
             <CalendarIcon className="w-5 h-5 mr-2 text-yellow-500" />
             Date
           </label>
+
+          {/* Uses an HTML5 date input. */}
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
+            // Prevents selecting past dates using min attribute.
             min={new Date().toISOString().split("T")[0]}
             className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring focus:ring-yellow-500"
           />
