@@ -4,6 +4,7 @@ import { useState, useActionState } from "react";
 import { useRouter } from "next/navigation"; // For handling form submission or navigation
 import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/outline"; //Heroicons
 import { BookingState, createBooking } from "@/app/lib/actions";
+import ConfirmationModal from "@/app/ui/ConfirmationModal";
 
 const Booking = () => {
   const router = useRouter();
@@ -13,21 +14,6 @@ const Booking = () => {
 
   const initialState: BookingState = { errors: {}, message: null };
   const [state, handleSubmit] = useActionState(createBooking, initialState);
-
-  // Handle Form Submission
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (!selectedDate || !selectedTime) {
-  //     alert("Please select a valid date and time!");
-  //     return;
-  //   }
-  //   // Example: Redirecting to a confirmation page. not yet implemented.
-  //   // router.push(
-  //   //   `/confirmation?people=${peopleCount}&date=${selectedDate}&time=${selectedTime}`
-  //   // );
-  //   console.log("success!");
-  // };
 
   const increment = () => setPeopleCount((prev) => prev + 1);
   const decrement = () =>
@@ -161,6 +147,16 @@ const Booking = () => {
         >
           Confirm Reservation
         </button>
+        {state.message && (
+          <ConfirmationModal
+            openModal={true}
+            bookingDetails={{
+              peopleCount,
+              selectedDate,
+              selectedTime,
+            }}
+          />
+        )}
       </form>
     </div>
   );

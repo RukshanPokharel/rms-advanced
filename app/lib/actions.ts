@@ -29,12 +29,11 @@ export type BookingState = {
   message?: string | null;
 };
 
-// create a new booking (server action), same as create api
-
+// create a new booking (server action), same as create API
 export async function createBooking(
   prevState: BookingState,
   formData: FormData
-) {
+): Promise<BookingState> {
   // form data validation using Zod
   // data extraction from form data and insertion into database
   const validatedFields = CreateBooking.safeParse({
@@ -45,8 +44,13 @@ export async function createBooking(
 
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
+    const errors = validatedFields.error.flatten().fieldErrors;
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
+      errors: {
+        noOfGuest: errors.noOfGuest || [],
+        dateOfBooking: errors.dateOfBooking || [],
+        bookingTime: errors.bookingTime || [],
+      },
       message: "Missing Fields. Failed to Create Booking.",
     };
   }
@@ -61,16 +65,21 @@ export async function createBooking(
         VALUES (${noOfGuest}, ${dateOfBooking}, ${bookingTime})
       `;
   } catch (error) {
-    // If a database error occurs, return a more specific error.
+    // If a database error occurs, return a more specific error message.
     return {
-      message: "Database Error: Failed to Create Invoice.",
+      errors: {},
+      message: "Database Error: Failed to Create Booking.",
     };
   }
 
-  // This function allows you to purge(get rid of) cached data on-demand for a specific path.
-  // or
-  // Calling revalidatePath to clear the client cache and make a new server request.
-  revalidatePath("/home");
-  // This function allows you to redirect the user to another URL. It can be used in Server Components, Route Handlers, and Server Actions.
-  redirect("/home");
+  // Clear the client-side cache and redirect user after successful booking
+
+  // revalidatePath("/home");
+  // redirect("/home");
+
+  // Return a success message in BookingState format
+  return {
+    errors: {},
+    message: "Booking successfully created!",
+  };
 }
