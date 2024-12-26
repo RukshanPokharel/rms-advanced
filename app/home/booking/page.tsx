@@ -11,8 +11,8 @@ const Booking = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
 
-  // const initialState: BookingState = { message: null, errors: {} };
-  // const [state, handleSubmit] = useActionState(createBooking, initialState);
+  const initialState: BookingState = { errors: {}, message: null };
+  const [state, handleSubmit] = useActionState(createBooking, initialState);
 
   // Handle Form Submission
 
@@ -46,9 +46,7 @@ const Booking = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
       <form
-        // onSubmit={handleSubmit}
-        //  action={createBooking}
-
+        action={handleSubmit}
         // Responsive: Scales well on all screen sizes with max-w-md and w-full.
         className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md"
       >
@@ -72,9 +70,11 @@ const Booking = () => {
             </button>
             <input
               type="text"
+              name="noOfGuest"
               value={peopleCount}
               readOnly
               className="w-12 h-10 text-center bg-gray-700 text-white border-0"
+              aria-describedby="booking-error"
             />
             <button
               type="button"
@@ -83,6 +83,14 @@ const Booking = () => {
             >
               +
             </button>
+          </div>
+          <div id="booking-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.noOfGuest &&
+              state.errors.noOfGuest.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
           </div>
         </div>
 
@@ -96,12 +104,22 @@ const Booking = () => {
           {/* Uses an HTML5 date input. */}
           <input
             type="date"
+            name="dateOfBooking"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             // Prevents selecting past dates using min attribute.
             min={new Date().toISOString().split("T")[0]}
             className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring focus:ring-yellow-500"
+            aria-describedby="booking2-error"
           />
+        </div>
+        <div id="booking2-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.dateOfBooking &&
+            state.errors.dateOfBooking.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
         </div>
 
         {/* Time Picker */}
@@ -111,9 +129,11 @@ const Booking = () => {
             Time
           </label>
           <select
+            name="bookingTime"
             value={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
             className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring focus:ring-yellow-500"
+            aria-describedby="booking3-error"
           >
             <option value="" disabled>
               Select a time
@@ -124,6 +144,14 @@ const Booking = () => {
               </option>
             ))}
           </select>
+        </div>
+        <div id="booking3-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.bookingTime &&
+            state.errors.bookingTime.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
         </div>
 
         {/* Submit Button */}
